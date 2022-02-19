@@ -1,47 +1,32 @@
+@testable import palindrom2
 import XCTest
-import class Foundation.Bundle
 
 final class palindrom2Tests: XCTestCase {
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
+  func testBinaryPalindrom() {
+    let p0: Int64 = 0b1
+    let p1: Int64 = 0b10001
+    let p2: Int64 = 0b10101
+    let p3: Int64 = 0b100001
+    let p4: Int64 = 0b101101
+    let p5: Int64 = Int64.max
+    XCTAssertEqual(isBinaryPalindrom(p0), true)
+    XCTAssertEqual(isBinaryPalindrom(p1), true)
+    XCTAssertEqual(isBinaryPalindrom(p2), true)
+    XCTAssertEqual(isBinaryPalindrom(p3), true)
+    XCTAssertEqual(isBinaryPalindrom(p4), true)
+    XCTAssertEqual(isBinaryPalindrom(p5), true)
 
-        // Some of the APIs that we use below are available in macOS 10.13 and above.
-        guard #available(macOS 10.13, *) else {
-            return
-        }
-
-        // Mac Catalyst won't have `Process`, but it is supported for executables.
-        #if !targetEnvironment(macCatalyst)
-
-        let fooBinary = productsDirectory.appendingPathComponent("palindrom2")
-
-        let process = Process()
-        process.executableURL = fooBinary
-
-        let pipe = Pipe()
-        process.standardOutput = pipe
-
-        try process.run()
-        process.waitUntilExit()
-
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8)
-
-        XCTAssertEqual(output, "Hello, world!\n")
-        #endif
-    }
-
-    /// Returns path to the built products directory.
-    var productsDirectory: URL {
-      #if os(macOS)
-        for bundle in Bundle.allBundles where bundle.bundlePath.hasSuffix(".xctest") {
-            return bundle.bundleURL.deletingLastPathComponent()
-        }
-        fatalError("couldn't find the products directory")
-      #else
-        return Bundle.main.bundleURL
-      #endif
-    }
+    let np0: Int64 = 0b10
+    let np1: Int64 = 0b10011
+    let np2: Int64 = 0b11101
+    let np3: Int64 = 0b101001
+    let np4: Int64 = 0b100101
+    let np5: Int64 = Int64.max - 1
+    XCTAssertEqual(isBinaryPalindrom(np0), false)
+    XCTAssertEqual(isBinaryPalindrom(np1), false)
+    XCTAssertEqual(isBinaryPalindrom(np2), false)
+    XCTAssertEqual(isBinaryPalindrom(np3), false)
+    XCTAssertEqual(isBinaryPalindrom(np4), false)
+    XCTAssertEqual(isBinaryPalindrom(np5), false)
+  }
 }

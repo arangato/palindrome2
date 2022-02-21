@@ -1,11 +1,15 @@
 import CoreFoundation
 import Foundation
 
-makePalindrome(halfDigitsCount: 1)
+Decimal.makeEvenPalindrome(highHalfStart: 1, highHalfEnd: 9, numOfDigits: 2)
+Decimal.makeOddPalindrome(highHalfStart: 1, highHalfEnd: 9, numOfDigits: 3)
 print("----------")
-makePalindrome(halfDigitsCount: 2)
+Decimal.makeEvenPalindrome(highHalfStart: 10, highHalfEnd: 99, numOfDigits: 4)
+Decimal.makeOddPalindrome(highHalfStart: 10, highHalfEnd: 99, numOfDigits: 5)
 print("----------")
-makePalindrome(halfDigitsCount: 3)
+Decimal.makeEvenPalindrome(highHalfStart: 100, highHalfEnd: 999, numOfDigits: 6)
+Decimal.makeOddPalindrome(highHalfStart: 100, highHalfEnd: 999, numOfDigits: 7)
 print("----------")
-makePalindrome(halfDigitsCount: 4)
+Decimal.makeEvenPalindrome(highHalfStart: 1000, highHalfEnd: 9999, numOfDigits: 8)
+Decimal.makeOddPalindrome(highHalfStart: 1000, highHalfEnd: 9999, numOfDigits: 9)
 print("----------")

@@ -5,7 +5,7 @@ import Foundation
 
 enum Binary {
   // works for non zero numbers.
-  static func isPalindrom(_ n: Int64) -> Bool{
+  static func isPalindrome(_ n: Int64) -> Bool{
     let msbIndex = flsll(n)
     var i = msbIndex - 1
     var j = 0
@@ -20,7 +20,7 @@ enum Binary {
     return true
   }
 
-  static func isPalindromLookup(_ n: Int64) -> Bool{
+  static func isPalindromeLookup(_ n: Int64) -> Bool{
     let msbIndex = flsll(n)
     var lowHalf = Int32(n >> ((msbIndex + 1) / 2))
     var highHalf = Int32((n << (64 - msbIndex / 2)) >> 32)

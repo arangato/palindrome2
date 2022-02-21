@@ -4,7 +4,7 @@
 import Foundation
 
 /// halfDigitsCount > 0
-func makePalindrom(halfDigitsCount: Int) {
+func makePalindrome(halfDigitsCount: Int) {
   let middleDigits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
   var start = 1
   var upperEnd = 9

@@ -1,15 +1,42 @@
 import CoreFoundation
 import Foundation
 
-Decimal.makeEvenPalindrome(highHalfStart: 1, highHalfEnd: 9, numOfDigits: 2)
-Decimal.makeOddPalindrome(highHalfStart: 1, highHalfEnd: 9, numOfDigits: 3)
-print("----------")
-Decimal.makeEvenPalindrome(highHalfStart: 10, highHalfEnd: 99, numOfDigits: 4)
-Decimal.makeOddPalindrome(highHalfStart: 10, highHalfEnd: 99, numOfDigits: 5)
-print("----------")
-Decimal.makeEvenPalindrome(highHalfStart: 100, highHalfEnd: 999, numOfDigits: 6)
-Decimal.makeOddPalindrome(highHalfStart: 100, highHalfEnd: 999, numOfDigits: 7)
-print("----------")
-Decimal.makeEvenPalindrome(highHalfStart: 1000, highHalfEnd: 9999, numOfDigits: 8)
-Decimal.makeOddPalindrome(highHalfStart: 1000, highHalfEnd: 9999, numOfDigits: 9)
-print("----------")
+let numberOfOperations = 5
+let queue = OperationQueue()
+queue.maxConcurrentOperationCount = numberOfOperations
+let schedulingSemaphore = DispatchSemaphore(value: numberOfOperations + 3)
+
+var pendingCompletion = [Int: Int]()
+var completed = 0
+var lock = NSLock()
+
+for n in 1...10000 {
+  schedulingSemaphore.wait()
+  queue.addOperation {
+    op(n)
+    schedulingSemaphore.signal()
+    complete(n)
+  }
+}
+
+func op(_ n: Int) {
+  print("Start op #\(n)")
+  let group = DispatchGroup()
+  group.enter()
+  let duration = Double(Int.random(in: 1...9)) / 5
+  print("op #\(n) duration: \(duration)")
+  group.wait(timeout: .now() + duration)
+  print("Finish op #\(n)")
+}
+
+func complete(_ n: Int) {
+  lock.lock()
+  pendingCompletion[n] = n
+  while pendingCompletion[completed + 1] != nil {
+    completed += 1
+    pendingCompletion.removeValue(forKey: completed)
+    print("                             completed \(completed)")
+  }
+
+  lock.unlock()
+}

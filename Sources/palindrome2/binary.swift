@@ -5,8 +5,8 @@ import Foundation
 
 enum Binary {
   // works for non zero numbers.
-  static func isPalindrome(_ n: Int64) -> Bool{
-    let msbIndex = flsll(n)
+  static func isPalindrome(_ n: UInt64) -> Bool{
+    let msbIndex = flsll(Int64(bitPattern: n))
     var i = msbIndex - 1
     var j = 0
     while i > j {
@@ -20,10 +20,10 @@ enum Binary {
     return true
   }
 
-  static func isPalindromeLookup(_ n: Int64) -> Bool{
-    let msbIndex = flsll(n)
-    var lowHalf = Int32(n >> ((msbIndex + 1) / 2))
-    var highHalf = Int32((n << (64 - msbIndex / 2)) >> 32)
+  static func isPalindromeLookup(_ n: UInt64) -> Bool{
+    let msbIndex = flsll(Int64(bitPattern: n))
+    var lowHalf = UInt32(n >> ((msbIndex + 1) / 2))
+    var highHalf = UInt32((n << (64 - msbIndex / 2)) >> 32)
     for _ in 0...3 {
       let highByte = (highHalf >> 24) & 0xFF
       guard reverseBits[Int(highByte)] == (lowHalf & 0xFF) else { return false }

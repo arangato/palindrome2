@@ -26,8 +26,29 @@ enum Decimal {
     20: 1000000000...9999999999
   ]
 
-  static let digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+  static func makePalindrome(
+    highHalfStart: Int64,
+    highHalfEnd: Int64,
+    numOfDigits: Int
+  ) -> Array<UInt64> {
+    assert(range[numOfDigits]!.contains(Int(highHalfStart)))
+    assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
 
+    if numOfDigits.isOdd {
+      return makeOddPalindrome(
+        highHalfStart: highHalfStart,
+        highHalfEnd: highHalfEnd,
+        numOfDigits: numOfDigits
+      )
+    } else {
+      return makeEvenPalindrome(
+        highHalfStart: highHalfStart,
+        highHalfEnd: highHalfEnd,
+        numOfDigits: numOfDigits
+      )
+    }
+  }
+  
   // no middle digit
   static func makeEvenPalindrome(
     highHalfStart: Int64,
@@ -35,8 +56,6 @@ enum Decimal {
     numOfDigits: Int
   ) -> Array<UInt64> {
     assert(numOfDigits % 2 == 0)
-    assert(range[numOfDigits]!.contains(Int(highHalfStart)))
-    assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
     
     var results = [UInt64]()
 
@@ -45,20 +64,23 @@ enum Decimal {
       let high = String(format: format, m)
       let low = String(high.reversed())
       let p = "\(high)\(low)"
-      print(p)
+      let n = UInt64(p)!
+      if Binary.isPalindromeLookup(n) {
+        results.append(n)
+      }
     }
     
     return results
   }
   
+  static let digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
   static func makeOddPalindrome(
     highHalfStart: Int64,
     highHalfEnd: Int64,
     numOfDigits: Int
   ) -> Array<UInt64>  {
-    assert(numOfDigits % 2 == 1)
-    assert(range[numOfDigits]!.contains(Int(highHalfStart)))
-    assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
+    assert(numOfDigits.isOdd)
 
     var results = [UInt64]()
 
@@ -68,7 +90,10 @@ enum Decimal {
         let high = String(format: format, m)
         let low = String(high.reversed())
         let p = "\(high)\(middle)\(low)"
-        print(p)
+        let n = UInt64(p)!
+        if Binary.isPalindromeLookup(n) {
+          results.append(n)
+        }
       }
     }
     
@@ -79,4 +104,8 @@ enum Decimal {
     guard p > 0 else { return 1 }
     return 10 * pow(a, p - 1)
   }
+}
+
+extension Int {
+  var isOdd: Bool { self & 1 == 1 }
 }

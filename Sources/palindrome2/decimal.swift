@@ -33,11 +33,13 @@ enum Decimal {
     highHalfStart: Int64,
     highHalfEnd: Int64,
     numOfDigits: Int
-  ) {
+  ) -> Array<UInt64> {
     assert(numOfDigits % 2 == 0)
     assert(range[numOfDigits]!.contains(Int(highHalfStart)))
     assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
     
+    var results = [UInt64]()
+
     let format = "%0\(numOfDigits/2)d"
     for m in highHalfStart...highHalfEnd {
       let high = String(format: format, m)
@@ -45,16 +47,21 @@ enum Decimal {
       let p = "\(high)\(low)"
       print(p)
     }
+    
+    return results
   }
   
   static func makeOddPalindrome(
     highHalfStart: Int64,
     highHalfEnd: Int64,
     numOfDigits: Int
-  ) {
+  ) -> Array<UInt64>  {
     assert(numOfDigits % 2 == 1)
     assert(range[numOfDigits]!.contains(Int(highHalfStart)))
     assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
+
+    var results = [UInt64]()
+
     let format = "%0\(numOfDigits/2)d"
     for m in highHalfStart...highHalfEnd {
       for middle in digits {
@@ -64,6 +71,8 @@ enum Decimal {
         print(p)
       }
     }
+    
+    return results
   }
   
   static func pow(_ a: Int64, _ p: Int) -> Int64 {

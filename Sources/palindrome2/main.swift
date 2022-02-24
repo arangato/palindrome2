@@ -10,7 +10,7 @@ var lock = NSLock()
 
 var pendingCompletion = [Int: [UInt64]]()
 var lastCompletedBatch = 0
-var checkedNumbersCount = Int64(0)
+var checkedNumbersCount = 0
 
 var batchNumber = 2
 var numOfDigits = 2
@@ -20,7 +20,12 @@ var start = rangeStart
 
 // handling special cases is annoying, so these are hard coded.
 // So I cheated a few nano second of compute, so what?!
-completeBatch(1, [0, 1, 3, 5, 7, 9])
+completeBatch(1, 6, [0, 1, 3, 5, 7, 9])
+
+let step: Int64 = 1_000_000
+var checkpoint = step
+var found = 0
+let startTime = Date()
 
 while true {
   schedulingSemaphore.wait()
@@ -44,7 +49,7 @@ while true {
       highHalfEnd: batchEnd,
       numOfDigits: batchDigits
     )
-    completeBatch(n, results)
+    completeBatch(n, Int(batchEnd - batchStart + 1), results)
     schedulingSemaphore.signal()
   }
 
@@ -63,16 +68,25 @@ while true {
   
 }
 
-func completeBatch(_ n: Int, _ results: [UInt64]) {
+func completeBatch(_ n: Int, _ size: Int, _ results: [UInt64]) {
   lock.lock()
   pendingCompletion[n] = results
   while let nextResults = pendingCompletion[lastCompletedBatch + 1] {
     lastCompletedBatch += 1
     pendingCompletion.removeValue(forKey: lastCompletedBatch)
     for n in nextResults {
-      print(n)
+//      print(n)
     }
   }
-  checkedNumbersCount += batchSize
+  checkedNumbersCount += size
+  found += results.count
+
+  if checkedNumbersCount > checkpoint {
+    checkpoint += step
+    let ellapsedSeconds = Date().timeIntervalSince(startTime)
+    let rate = Double(checkedNumbersCount) / ellapsedSeconds
+    print("\(ellapsedSeconds):  rate = \(round(rate)) / sec  \(found)   total count: \(checkedNumbersCount)")
+  }
+
   lock.unlock()
 }

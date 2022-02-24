@@ -4,28 +4,28 @@
 import Foundation
 
 enum Decimal {
-  static let upperLimit: [Int: Int64] = [
-    2: 9,
-    3: 9,
-    4: 99,
-    5: 99,
-    6: 999,
-    7: 999,
-    8: 9999,
-    9: 9999,
-    10: 99999,
-    11: 99999,
-    12: 999999,
-    13: 999999,
-    14: 9999999,
-    15: 9999999,
-    16: 99999999,
-    17: 99999999,
-    18: 999999999,
-    19: 999999999,
-    20: 9999999999
+  static let range = [
+    2:           1...9,
+    3:           1...9,
+    4:          10...99,
+    5:          10...99,
+    6:         100...999,
+    7:         100...999,
+    8:        1000...9999,
+    9:        1000...9999,
+    10:      10000...99999,
+    11:      10000...99999,
+    12:     100000...999999,
+    13:     100000...999999,
+    14:    1000000...9999999,
+    15:    1000000...9999999,
+    16:   10000000...99999999,
+    17:   10000000...99999999,
+    18:  100000000...999999999,
+    19:  100000000...999999999,
+    20: 1000000000...9999999999
   ]
-  
+
   static let digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
   // no middle digit
@@ -35,8 +35,8 @@ enum Decimal {
     numOfDigits: Int
   ) {
     assert(numOfDigits % 2 == 0)
-    assert(highHalfStart >= pow(10, numOfDigits / 2 - 1))
-    assert(highHalfEnd <=  upperLimit[numOfDigits]!)
+    assert(range[numOfDigits]!.contains(Int(highHalfStart)))
+    assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
     
     let format = "%0\(numOfDigits/2)d"
     for m in highHalfStart...highHalfEnd {
@@ -53,9 +53,8 @@ enum Decimal {
     numOfDigits: Int
   ) {
     assert(numOfDigits % 2 == 1)
-    assert(highHalfStart >= pow(10, numOfDigits / 2 - 1))
-    assert(highHalfEnd <=  upperLimit[numOfDigits]!)
-    
+    assert(range[numOfDigits]!.contains(Int(highHalfStart)))
+    assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
     let format = "%0\(numOfDigits/2)d"
     for m in highHalfStart...highHalfEnd {
       for middle in digits {

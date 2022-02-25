@@ -1,6 +1,7 @@
 // Copyright (c) 2021 Lightricks. All rights reserved.
 // Created by Maxim Grabarnik.
 
+import BigNumber
 import Foundation
 
 enum Binary {
@@ -13,6 +14,28 @@ enum Binary {
       let highBitSet = (n & (1 << i)) > 0
       let lowBitSet = (n & (1 << j)) > 0
       guard highBitSet == lowBitSet else { return false }
+      i -= 1
+      j += 1
+    }
+
+    return true
+  }
+
+  // works for non zero Big integers.
+  static func isPalindrome(_ n: BInt) -> Bool{
+    let rawValue = n.rawValue.1 // array of UInt64
+    let msbIndex = flsll(Int64(bitPattern: rawValue.last!)) + Int32(64 * (rawValue.count - 1))
+    
+    var i = msbIndex - 1
+    var highBit = BInt.one << (msbIndex - 1)
+    var lowBit = BInt.one
+    var j = 0
+    while i > j {
+      let highBitSet = (n & highBit) > 0
+      let lowBitSet = (n & lowBit) > 0
+      guard highBitSet == lowBitSet else { return false }
+      highBit >>= 1
+      lowBit <<= 1
       i -= 1
       j += 1
     }
@@ -52,4 +75,8 @@ enum Binary {
     0x07, 0x87, 0x47, 0xC7, 0x27, 0xA7, 0x67, 0xE7, 0x17, 0x97, 0x57, 0xD7, 0x37, 0xB7, 0x77, 0xF7,
     0x0F, 0x8F, 0x4F, 0xCF, 0x2F, 0xAF, 0x6F, 0xEF, 0x1F, 0x9F, 0x5F, 0xDF, 0x3F, 0xBF, 0x7F, 0xFF
   ]
+}
+
+extension BInt {
+  static let one = BInt("1", radix: 10)!
 }

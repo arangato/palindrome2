@@ -1,3 +1,4 @@
+import BigNumber
 @testable import palindrome2
 import XCTest
 
@@ -59,4 +60,45 @@ final class palindrom2Tests: XCTestCase {
     let r4 = Decimal.reverseDigits(1234567, digits: 3)
     XCTAssertEqual(r4, 765)
   }
+  
+  func testBinaryPalindromeBInt() {
+    let p0 = BInt("1", radix: 2)!
+    let p1 = BInt("10001", radix: 2)!
+    let p2 = BInt("10101", radix: 2)!
+    let p3 = BInt("100001", radix: 2)!
+    let p4 = BInt("101101", radix: 2)!
+    let p5 = BInt("1979791", radix: 10)!
+    let p6 = BInt("7451111547", radix: 10)!
+    let p7 = BInt("\(UInt64.max)", radix: 10)!
+    let p8 = BInt("7475703079870789703075747", radix: 10)!
+    XCTAssertEqual(Binary.isPalindrome(p0), true)
+    XCTAssertEqual(Binary.isPalindrome(p1), true)
+    XCTAssertEqual(Binary.isPalindrome(p2), true)
+    XCTAssertEqual(Binary.isPalindrome(p3), true)
+    XCTAssertEqual(Binary.isPalindrome(p4), true)
+    XCTAssertEqual(Binary.isPalindrome(p5), true)
+    XCTAssertEqual(Binary.isPalindrome(p6), true)
+    XCTAssertEqual(Binary.isPalindrome(p7), true)
+    XCTAssertEqual(Binary.isPalindrome(p8), true)
+
+    let np0 = BInt("10", radix: 2)!
+    let np1 = BInt("10011", radix: 2)!
+    let np2 = BInt("11101", radix: 2)!
+    let np3 = BInt("101001", radix: 2)!
+    let np4 = BInt("100101", radix: 2)!
+    let np5 = BInt("1978791", radix: 10)!
+    let np6 = BInt("74512321547", radix: 10)!
+    let np7 = BInt("\(UInt64.max - 1)", radix: 10)!
+    let np8 = BInt("7475703079871789703075747", radix: 10)!
+    XCTAssertEqual(Binary.isPalindrome(np0), false)
+    XCTAssertEqual(Binary.isPalindrome(np1), false)
+    XCTAssertEqual(Binary.isPalindrome(np2), false)
+    XCTAssertEqual(Binary.isPalindrome(np3), false)
+    XCTAssertEqual(Binary.isPalindrome(np4), false)
+    XCTAssertEqual(Binary.isPalindrome(np5), false)
+    XCTAssertEqual(Binary.isPalindrome(np6), false)
+    XCTAssertEqual(Binary.isPalindrome(np7), false)
+    XCTAssertEqual(Binary.isPalindrome(np8), false)
+  }
+
 }

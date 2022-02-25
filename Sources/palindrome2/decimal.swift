@@ -35,13 +35,13 @@ enum Decimal {
     assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
 
     if numOfDigits.isOdd {
-      return makeOddPalindrome(
+      return makeOddPalindromeArithmetic(
         highHalfStart: highHalfStart,
         highHalfEnd: highHalfEnd,
         numOfDigits: numOfDigits
       )
     } else {
-      return makeEvenPalindrome(
+      return makeEvenPalindromeArithmetic(
         highHalfStart: highHalfStart,
         highHalfEnd: highHalfEnd,
         numOfDigits: numOfDigits
@@ -49,6 +49,8 @@ enum Decimal {
     }
   }
   
+  // MARK: Stupid string based palindrome generator
+
   // no middle digit
   static func makeEvenPalindrome(
     highHalfStart: UInt64,
@@ -100,7 +102,68 @@ enum Decimal {
     return results
   }
   
-  static func pow(_ a: Int64, _ p: Int) -> Int64 {
+  // MARK: arythmetic palindrome generator
+
+  // no middle digit
+  static func makeEvenPalindromeArithmetic(
+    highHalfStart: UInt64,
+    highHalfEnd: UInt64,
+    numOfDigits: Int
+  ) -> Array<UInt64> {
+    assert(numOfDigits % 2 == 0)
+    
+    var results = [UInt64]()
+
+    let halfDigits = numOfDigits / 2
+    let factor = pow(10, halfDigits)
+    for high in highHalfStart...highHalfEnd {
+      let low = reverseDigits(high, digits: halfDigits)
+      let n = high * factor + low
+      if Binary.isPalindromeLookup(n) {
+        results.append(n)
+      }
+    }
+    
+    return results
+  }
+  
+  static func makeOddPalindromeArithmetic(
+    highHalfStart: UInt64,
+    highHalfEnd: UInt64,
+    numOfDigits: Int
+  ) -> Array<UInt64>  {
+    assert(numOfDigits.isOdd)
+
+    var results = [UInt64]()
+
+    let halfDigits = numOfDigits / 2
+    let middleFactor = pow(10, halfDigits)
+    let highFactor = middleFactor * 10
+    for high in highHalfStart...highHalfEnd {
+      for middle in 0...9 {
+        let low = reverseDigits(high, digits: halfDigits)
+        let n = high * highFactor + UInt64(middle) * middleFactor + low
+        if Binary.isPalindromeLookup(n) {
+          results.append(n)
+        }
+      }
+    }
+    
+    return results
+  }
+  
+  @inline(__always)
+  static func reverseDigits(_ n: UInt64, digits: Int) -> UInt64 {
+    var n = n
+    var result = UInt64(0)
+    for _ in 0..<digits {
+      result = result * 10 + n % 10
+      n /= 10
+    }
+    return result
+  }
+  
+  static func pow(_ a: UInt64, _ p: Int) -> UInt64 {
     guard p > 0 else { return 1 }
     return 10 * pow(a, p - 1)
   }

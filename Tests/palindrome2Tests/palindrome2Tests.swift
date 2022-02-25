@@ -45,4 +45,18 @@ final class palindrom2Tests: XCTestCase {
     XCTAssertEqual(isPalindrome(np6), false)
     XCTAssertEqual(isPalindrome(np7), false)
   }
+  
+  func testReverseDigits() {
+    let r1 = Decimal.reverseDigits(1234567, digits: 7)
+    XCTAssertEqual(r1, 7654321)
+
+    let r2 = Decimal.reverseDigits(12345, digits: 7)
+    XCTAssertEqual(r2, 5432100)
+
+    let r3 = Decimal.reverseDigits(1234500, digits: 7)
+    XCTAssertEqual(r3, 54321)
+
+    let r4 = Decimal.reverseDigits(1234567, digits: 3)
+    XCTAssertEqual(r4, 765)
+  }
 }

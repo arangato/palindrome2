@@ -2,7 +2,7 @@ import CoreFoundation
 import Foundation
 
 let batchSize: Int64 = 100000
-let concurrentOperationCount = 10
+let concurrentOperationCount = ProcessInfo.processInfo.processorCount
 let queue = OperationQueue()
 queue.maxConcurrentOperationCount = concurrentOperationCount
 let schedulingSemaphore = DispatchSemaphore(value: concurrentOperationCount + 1)
@@ -10,7 +10,8 @@ var lock = NSLock()
 
 var pendingCompletion = [Int: [UInt64]]()
 var lastCompletedBatch = 0
-var checkedNumbersCount = Int64(0)
+var checkedNumbersCount = 0
+var totalCheckedNumbersCount = 0
 
 var batchNumber = 2
 var numOfDigits = 2
@@ -18,9 +19,13 @@ var rangeStart: Int64 = 1
 var rangeEnd: Int64 = 9
 var start = rangeStart
 
+var found = 0
+var startTime = Date()
+var measurementStartTime = startTime
+
 // handling special cases is annoying, so these are hard coded.
 // So I cheated a few nano second of compute, so what?!
-completeBatch(1, [0, 1, 3, 5, 7, 9])
+completeBatch(1, 6, [0, 1, 3, 5, 7, 9])
 
 while true {
   schedulingSemaphore.wait()
@@ -39,12 +44,14 @@ while true {
   let batchDigits = numOfDigits
   let n = batchNumber
   queue.addOperation {
+//    print("           batch \(n): \(Int(batchEnd - batchStart + 1)),   " +
+//          "start: \(batchStart), end: \(batchEnd)")
     let results = Decimal.makePalindrome(
       highHalfStart: batchStart,
       highHalfEnd: batchEnd,
       numOfDigits: batchDigits
     )
-    completeBatch(n, results)
+    completeBatch(n, Int(batchEnd - batchStart + 1), results)
     schedulingSemaphore.signal()
   }
 
@@ -63,16 +70,40 @@ while true {
   
 }
 
-func completeBatch(_ n: Int, _ results: [UInt64]) {
+func completeBatch(_ n: Int, _ size: Int, _ results: [UInt64]) {
   lock.lock()
   pendingCompletion[n] = results
   while let nextResults = pendingCompletion[lastCompletedBatch + 1] {
     lastCompletedBatch += 1
     pendingCompletion.removeValue(forKey: lastCompletedBatch)
     for n in nextResults {
+#if !MEASURE
       print(n)
+#endif
     }
   }
-  checkedNumbersCount += batchSize
+  
+  checkedNumbersCount += size
+  totalCheckedNumbersCount += size
+  found += results.count
+  
+#if MEASURE
+  let now = Date()
+  let ellapsedSeconds = now.timeIntervalSince(measurementStartTime)
+  if ellapsedSeconds > 1 {
+    let totalEllapsedSeconds = now.timeIntervalSince(startTime)
+    let rate = Double(checkedNumbersCount) / ellapsedSeconds
+    let totalRate = Double(totalCheckedNumbersCount) / totalEllapsedSeconds
+    print("\(totalEllapsedSeconds):  rate = \(round(totalRate)) / sec  \(found)" +
+          "   numbers checked: \(checkedNumbersCount)     total count: \(totalCheckedNumbersCount)" +
+          "   batches issued: \(batchNumber), completed in order: \(lastCompletedBatch)")
+    measurementStartTime = now
+    checkedNumbersCount = 0
+    if totalEllapsedSeconds > 210 {
+      exit(0)
+    }
+  }
+#endif
+
   lock.unlock()
 }

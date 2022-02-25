@@ -1,6 +1,16 @@
 # palindrom2
 
-A description of this package.
+Computes numbers that are palindromes in both decimal and binary.
+
+## Execute
+
+swift run -c release
+
+## Execute with debug info and processing rate measurements
+
+swift run -c release -Xswiftc -DMEASURE
+
+## Notes
 
 a simple loop perform 1733902255 iterations a second.
 

@@ -1,7 +1,7 @@
 import CoreFoundation
 import Foundation
 
-let batchSize: Int64 = 1000000
+let batchSize: Int64 = 100000
 let concurrentOperationCount = ProcessInfo.processInfo.processorCount
 let queue = OperationQueue()
 queue.maxConcurrentOperationCount = concurrentOperationCount
@@ -77,13 +77,17 @@ func completeBatch(_ n: Int, _ size: Int, _ results: [UInt64]) {
     lastCompletedBatch += 1
     pendingCompletion.removeValue(forKey: lastCompletedBatch)
     for n in nextResults {
-//      print(n)
+#if !MEASURE
+      print(n)
+#endif
     }
   }
   
   checkedNumbersCount += size
   totalCheckedNumbersCount += size
   found += results.count
+  
+#if MEASURE
   let now = Date()
   let ellapsedSeconds = now.timeIntervalSince(measurementStartTime)
   if ellapsedSeconds > 1 {
@@ -99,6 +103,7 @@ func completeBatch(_ n: Int, _ size: Int, _ results: [UInt64]) {
       exit(0)
     }
   }
+#endif
 
   lock.unlock()
 }

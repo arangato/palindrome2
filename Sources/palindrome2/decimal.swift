@@ -206,12 +206,14 @@ enum Decimal {
 
     let halfDigits = numOfDigits / 2
     let factor = pow(BInt.ten, halfDigits)
+    var highPart = highHalfStart * factor
     for high in highHalfStart...highHalfEnd {
       let low = reverseDigits(high, digits: halfDigits)
-      let n = high * factor + low
+      let n = highPart + low
       if Binary.isPalindrome(n) {
         results.append(n)
       }
+      highPart += factor
     }
     
     return results
@@ -229,14 +231,18 @@ enum Decimal {
     let halfDigits = numOfDigits / 2
     let middleFactor = pow(BInt.ten, halfDigits)
     let highFactor = middleFactor * 10
+    var highPart = highHalfStart * highFactor
     for high in highHalfStart...highHalfEnd {
-      for middle in BInt.zero...BInt.nine {
+      var middle = BInt.zero
+      for _ in 0...9 {
         let low = reverseDigits(high, digits: halfDigits)
-        let n = high * highFactor + middle * middleFactor + low
+        let n = highPart + middle + low
         if Binary.isPalindrome(n) {
           results.append(n)
         }
+        middle += middleFactor
       }
+      highPart += highFactor
     }
     
     return results

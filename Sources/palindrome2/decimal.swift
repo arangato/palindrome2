@@ -1,6 +1,7 @@
 // Copyright (c) 2021 Lightricks. All rights reserved.
 // Created by Maxim Grabarnik.
 
+import BigNumber
 import Foundation
 
 enum Decimal {
@@ -115,7 +116,7 @@ enum Decimal {
     var results = [UInt64]()
 
     let halfDigits = numOfDigits / 2
-    let factor = pow(10, halfDigits)
+    let factor = pow(UInt64(10), halfDigits)
     for high in highHalfStart...highHalfEnd {
       let low = reverseDigits(high, digits: halfDigits)
       let n = high * factor + low
@@ -137,7 +138,7 @@ enum Decimal {
     var results = [UInt64]()
 
     let halfDigits = numOfDigits / 2
-    let middleFactor = pow(10, halfDigits)
+    let middleFactor = pow(UInt64(10), halfDigits)
     let highFactor = middleFactor * 10
     for high in highHalfStart...highHalfEnd {
       for middle in 0...9 {
@@ -165,10 +166,105 @@ enum Decimal {
   
   static func pow(_ a: UInt64, _ p: Int) -> UInt64 {
     guard p > 0 else { return 1 }
-    return 10 * pow(a, p - 1)
+    return a * pow(a, p - 1)
+  }
+  
+  // MARK: BigInt
+
+  static func makePalindrome(
+    highHalfStart: BInt,
+    highHalfEnd: BInt,
+    numOfDigits: Int
+  ) -> Array<BInt> {
+    assert(range[numOfDigits]!.contains(Int(highHalfStart)))
+    assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
+
+    if numOfDigits.isOdd {
+      return makeOddPalindrome(
+        highHalfStart: highHalfStart,
+        highHalfEnd: highHalfEnd,
+        numOfDigits: numOfDigits
+      )
+    } else {
+      return makeEvenPalindrome(
+        highHalfStart: highHalfStart,
+        highHalfEnd: highHalfEnd,
+        numOfDigits: numOfDigits
+      )
+    }
+  }
+  
+  // no middle digit
+  static func makeEvenPalindrome(
+    highHalfStart: BInt,
+    highHalfEnd: BInt,
+    numOfDigits: Int
+  ) -> Array<BInt> {
+    assert(numOfDigits % 2 == 0)
+    
+    var results = [BInt]()
+
+    let halfDigits = numOfDigits / 2
+    let factor = pow(BInt.ten, halfDigits)
+    for high in highHalfStart...highHalfEnd {
+      let low = reverseDigits(high, digits: halfDigits)
+      let n = high * factor + low
+      if Binary.isPalindrome(n) {
+        results.append(n)
+      }
+    }
+    
+    return results
+  }
+
+  static func makeOddPalindrome(
+    highHalfStart: BInt,
+    highHalfEnd: BInt,
+    numOfDigits: Int
+  ) -> Array<BInt>  {
+    assert(numOfDigits.isOdd)
+
+    var results = [BInt]()
+
+    let halfDigits = numOfDigits / 2
+    let middleFactor = pow(BInt.ten, halfDigits)
+    let highFactor = middleFactor * 10
+    for high in highHalfStart...highHalfEnd {
+      for middle in BInt.zero...BInt.nine {
+        let low = reverseDigits(high, digits: halfDigits)
+        let n = high * highFactor + middle * middleFactor + low
+        if Binary.isPalindrome(n) {
+          results.append(n)
+        }
+      }
+    }
+    
+    return results
+  }
+
+  static func pow(_ a: BInt, _ p: Int) -> BInt {
+    guard p > 0 else { return 1 }
+    return a * pow(a, p - 1)
+  }  
+
+  @inline(__always)
+  static func reverseDigits(_ n: BInt, digits: Int) -> BInt {
+    var n = n
+    var result = BInt.zero
+    for _ in 0..<digits {
+      result = result * 10 + n % 10
+      n /= 10
+    }
+    return result
   }
 }
 
 extension Int {
   var isOdd: Bool { self & 1 == 1 }
+}
+
+extension BInt {
+  static let ten = BInt("10", radix: 10)!
+  static let zero = BInt("0", radix: 10)!
+  static let nine = BInt("9", radix: 10)!
 }

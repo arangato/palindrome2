@@ -27,8 +27,8 @@ enum Decimal {
   ]
 
   static func makePalindrome(
-    highHalfStart: Int64,
-    highHalfEnd: Int64,
+    highHalfStart: UInt64,
+    highHalfEnd: UInt64,
     numOfDigits: Int
   ) -> Array<UInt64> {
     assert(range[numOfDigits]!.contains(Int(highHalfStart)))
@@ -51,8 +51,8 @@ enum Decimal {
   
   // no middle digit
   static func makeEvenPalindrome(
-    highHalfStart: Int64,
-    highHalfEnd: Int64,
+    highHalfStart: UInt64,
+    highHalfEnd: UInt64,
     numOfDigits: Int
   ) -> Array<UInt64> {
     assert(numOfDigits % 2 == 0)
@@ -76,8 +76,8 @@ enum Decimal {
   static let digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
   static func makeOddPalindrome(
-    highHalfStart: Int64,
-    highHalfEnd: Int64,
+    highHalfStart: UInt64,
+    highHalfEnd: UInt64,
     numOfDigits: Int
   ) -> Array<UInt64>  {
     assert(numOfDigits.isOdd)

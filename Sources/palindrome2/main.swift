@@ -1,14 +1,15 @@
 import CoreFoundation
 import Foundation
+import BigNumber
 
-let batchSize: UInt64 = 100000
+let batchSize: Int = 100000
 let concurrentOperationCount = ProcessInfo.processInfo.processorCount
 let queue = OperationQueue()
 queue.maxConcurrentOperationCount = concurrentOperationCount
 let schedulingSemaphore = DispatchSemaphore(value: concurrentOperationCount + 1)
 var lock = NSLock()
 
-var pendingCompletion = [Int: [UInt64]]()
+var pendingCompletion = [Int: [BInt]]()
 var lastCompletedBatch = 0
 var checkedNumbersCount = 0
 var totalCheckedNumbersCount = 0
@@ -16,8 +17,8 @@ var dualPalindromeCount = 0
 
 var batchNumber = 2
 var numOfDigits = 2
-var rangeStart: UInt64 = 1
-var rangeEnd: UInt64 = 9
+var rangeStart = BInt.one
+var rangeEnd = BInt.nine
 var start = rangeStart
 
 var found = 0
@@ -31,7 +32,7 @@ completeBatch(1, 6, [0, 1, 3, 5, 7, 9])
 while true {
   schedulingSemaphore.wait()
   
-  var end: UInt64
+  var end: BInt
   if numOfDigits.isOdd {
     end = start + batchSize / 10 // because each input half is repeated 10 times with different middle digits
   } else {
@@ -71,7 +72,7 @@ while true {
   
 }
 
-func completeBatch(_ n: Int, _ size: Int, _ results: [UInt64]) {
+func completeBatch(_ n: Int, _ size: Int, _ results: [BInt]) {
   lock.lock()
   pendingCompletion[n] = results
   while let nextResults = pendingCompletion[lastCompletedBatch + 1] {
@@ -106,7 +107,7 @@ func completeBatch(_ n: Int, _ size: Int, _ results: [UInt64]) {
           "   batches issued: \(batchNumber), completed in order: \(lastCompletedBatch)")
     measurementStartTime = now
     checkedNumbersCount = 0
-    if totalEllapsedSeconds > 210 {
+    if totalEllapsedSeconds > 210.0 {
       exit(0)
     }
   }

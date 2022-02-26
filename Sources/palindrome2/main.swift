@@ -12,6 +12,7 @@ var pendingCompletion = [Int: [UInt64]]()
 var lastCompletedBatch = 0
 var checkedNumbersCount = 0
 var totalCheckedNumbersCount = 0
+var dualPalindromeCount = 0
 
 var batchNumber = 2
 var numOfDigits = 2
@@ -78,7 +79,13 @@ func completeBatch(_ n: Int, _ size: Int, _ results: [UInt64]) {
     pendingCompletion.removeValue(forKey: lastCompletedBatch)
     for n in nextResults {
 #if !MEASURE
+      dualPalindromeCount += 1
+      #if TIMING
+      let totalEllapsedSeconds = Date().timeIntervalSince(startTime)
+      print("\(dualPalindromeCount):  \(n)      \(totalEllapsedSeconds)")
+      #else
       print(n)
+      #endif
 #endif
     }
   }

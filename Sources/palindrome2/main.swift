@@ -40,6 +40,14 @@ while true {
   
   end = min(end, rangeEnd)
   
+  let startFirstDigit = start.digit(numOfDigits / 2)
+  let endFirstDigit = end.digit(numOfDigits / 2)
+  if !startFirstDigit.isOdd && startFirstDigit == endFirstDigit {
+    start = rangeStart * UInt64(startFirstDigit + 1)
+    schedulingSemaphore.signal()
+    continue
+  }
+  
   let batchStart = start
   let batchEnd = end
   let batchDigits = numOfDigits

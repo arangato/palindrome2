@@ -274,3 +274,9 @@ extension BInt {
   static let zero = BInt("0", radix: 10)!
   static let nine = BInt("9", radix: 10)!
 }
+
+extension UInt64 {
+  func digit(_ n: Int) -> Int {
+    Int(self / Decimal.pow(10, n - 1) % 10)
+  }
+}

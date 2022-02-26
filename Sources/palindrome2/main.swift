@@ -1,7 +1,7 @@
 import CoreFoundation
 import Foundation
 
-let batchSize: UInt128 = 100000
+let batchSize: UInt128 = 10000
 let concurrentOperationCount = ProcessInfo.processInfo.processorCount
 let queue = OperationQueue()
 queue.maxConcurrentOperationCount = concurrentOperationCount
@@ -16,8 +16,8 @@ var dualPalindromeCount = 0
 
 var batchNumber = 2
 var numOfDigits = 2
-var rangeStart: UInt128 = 1
-var rangeEnd: UInt128 = 9
+var rangeStart: UInt128 = UInt128("1000000000000000000000")
+var rangeEnd: UInt128 = UInt128("9999999999999999999999")
 var start = rangeStart
 
 var found = 0

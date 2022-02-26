@@ -263,6 +263,102 @@ enum Decimal {
     }
     return result
   }
+
+  // MARK: BigInt
+
+  static func makePalindrome(
+    highHalfStart: UInt128,
+    highHalfEnd: UInt128,
+    numOfDigits: Int
+  ) -> Array<UInt128> {
+    assert(range[numOfDigits]!.contains(Int(highHalfStart)))
+    assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
+
+    if numOfDigits.isOdd {
+      return makeOddPalindrome(
+        highHalfStart: highHalfStart,
+        highHalfEnd: highHalfEnd,
+        numOfDigits: numOfDigits
+      )
+    } else {
+      return makeEvenPalindrome(
+        highHalfStart: highHalfStart,
+        highHalfEnd: highHalfEnd,
+        numOfDigits: numOfDigits
+      )
+    }
+  }
+  
+  // no middle digit
+  static func makeEvenPalindrome(
+    highHalfStart: UInt128,
+    highHalfEnd: UInt128,
+    numOfDigits: Int
+  ) -> Array<UInt128> {
+    assert(numOfDigits % 2 == 0)
+    
+    var results = [UInt128]()
+
+    let halfDigits = numOfDigits / 2
+    let factor = pow(UInt128(10), halfDigits)
+    var highPart = highHalfStart * factor
+    for high in highHalfStart...highHalfEnd {
+      let low = reverseDigits(high, digits: halfDigits)
+      let n = highPart + low
+      if Binary.isPalindrome(n) {
+        results.append(n)
+      }
+      highPart += factor
+    }
+    
+    return results
+  }
+
+  static func makeOddPalindrome(
+    highHalfStart: UInt128,
+    highHalfEnd: UInt128,
+    numOfDigits: Int
+  ) -> Array<UInt128>  {
+    assert(numOfDigits.isOdd)
+
+    var results = [UInt128]()
+
+    let halfDigits = numOfDigits / 2
+    let middleFactor = pow(UInt128(10), halfDigits)
+    let highFactor = middleFactor * 10
+    var highPart = highHalfStart * highFactor
+    for high in highHalfStart...highHalfEnd {
+      let low = reverseDigits(high, digits: halfDigits)
+      let highAndLow = highPart + low
+      var middle = UInt128(0)
+      for _ in 0...9 {
+        let n = highAndLow + middle
+        if Binary.isPalindrome(n) {
+          results.append(n)
+        }
+        middle += middleFactor
+      }
+      highPart += highFactor
+    }
+    
+    return results
+  }
+
+  static func pow(_ a: UInt128, _ p: Int) -> UInt128 {
+    guard p > 0 else { return 1 }
+    return a * pow(a, p - 1)
+  }
+
+  @inline(__always)
+  static func reverseDigits(_ n: UInt128, digits: Int) -> UInt128 {
+    var n = n
+    var result = UInt128(0)
+    for _ in 0..<digits {
+      result = result * 10 + n % 10
+      n /= 10
+    }
+    return result
+  }
 }
 
 extension Int {

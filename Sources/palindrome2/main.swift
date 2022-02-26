@@ -17,8 +17,8 @@ var dualPalindromeCount = 0
 
 var batchNumber = 2
 var numOfDigits = 2
-var rangeStart = BInt.one
-var rangeEnd = BInt.nine
+var rangeStart = BInt("1000000000000000000000", radix: 10)!
+var rangeEnd = BInt("9999999999999999999999", radix: 10)!
 var start = rangeStart
 
 var found = 0

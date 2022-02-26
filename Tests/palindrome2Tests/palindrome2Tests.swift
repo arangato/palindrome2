@@ -78,6 +78,23 @@ final class palindrom2Tests: XCTestCase {
     XCTAssertEqual(r5, BInt("987654321098765432109876543210987654321", radix: 10)!)
   }
   
+  func testReverseDigitsUInt128() {
+    let r1 = Decimal.reverseDigits(UInt128("1234567"), digits: 7)
+    XCTAssertEqual(r1, UInt128("7654321", radix: 10)!)
+
+    let r2 = Decimal.reverseDigits(UInt128("12345"), digits: 7)
+    XCTAssertEqual(r2, UInt128("5432100"))
+
+    let r3 = Decimal.reverseDigits(UInt128("1234500"), digits: 7)
+    XCTAssertEqual(r3, UInt128("54321"))
+
+    let r4 = Decimal.reverseDigits(UInt128("1234567"), digits: 3)
+    XCTAssertEqual(r4, UInt128("765"))
+
+    let r5 = Decimal.reverseDigits(UInt128("12345678901234567890123456789012345678"), digits: 38)
+    XCTAssertEqual(r5, UInt128("87654321098765432109876543210987654321"))
+  }
+  
  func testBinaryPalindromeBInt() {
     let p0 = BInt("1", radix: 2)!
     let p1 = BInt("10001", radix: 2)!

@@ -353,9 +353,16 @@ enum Decimal {
   static func reverseDigits(_ n: UInt128, digits: Int) -> UInt128 {
     var n = n
     var result = UInt128(0)
-    for _ in 0..<digits {
+    var digitsLeft = digits
+    while digitsLeft > 0 {
+      if n.value.upperBits == 0 {
+        let r = reverseDigits(n.value.lowerBits, digits: digitsLeft)
+        
+        return result * pow(UInt128(10), digitsLeft) + UInt128(r)
+      }
       result = result * 10 + n % 10
       n /= 10
+      digitsLeft -= 1
     }
     return result
   }

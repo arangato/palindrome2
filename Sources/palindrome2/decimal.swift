@@ -31,7 +31,7 @@ enum Decimal {
     highHalfStart: UInt64,
     highHalfEnd: UInt64,
     numOfDigits: Int
-  ) -> Array<UInt64> {
+  ) -> Array<String> {
     assert(range[numOfDigits]!.contains(Int(highHalfStart)))
     assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
 
@@ -57,10 +57,10 @@ enum Decimal {
     highHalfStart: UInt64,
     highHalfEnd: UInt64,
     numOfDigits: Int
-  ) -> Array<UInt64> {
+  ) -> Array<String> {
     assert(numOfDigits % 2 == 0)
     
-    var results = [UInt64]()
+    var results = [String]()
 
     let format = "%0\(numOfDigits/2)d"
     for m in highHalfStart...highHalfEnd {
@@ -69,7 +69,7 @@ enum Decimal {
       let p = "\(high)\(low)"
       let n = UInt64(p)!
       if Binary.isPalindromeLookup(n) {
-        results.append(n)
+        results.append(n.description)
       }
     }
     
@@ -82,10 +82,10 @@ enum Decimal {
     highHalfStart: UInt64,
     highHalfEnd: UInt64,
     numOfDigits: Int
-  ) -> Array<UInt64>  {
+  ) -> Array<String>  {
     assert(numOfDigits.isOdd)
 
-    var results = [UInt64]()
+    var results = [String]()
 
     let format = "%0\(numOfDigits/2)d"
     for m in highHalfStart...highHalfEnd {
@@ -95,7 +95,7 @@ enum Decimal {
         let p = "\(high)\(middle)\(low)"
         let n = UInt64(p)!
         if Binary.isPalindromeLookup(n) {
-          results.append(n)
+          results.append(n.description)
         }
       }
     }
@@ -110,10 +110,10 @@ enum Decimal {
     highHalfStart: UInt64,
     highHalfEnd: UInt64,
     numOfDigits: Int
-  ) -> Array<UInt64> {
+  ) -> Array<String> {
     assert(numOfDigits % 2 == 0)
     
-    var results = [UInt64]()
+    var results = [String]()
 
     let halfDigits = numOfDigits / 2
     let factor = pow(UInt64(10), halfDigits)
@@ -121,7 +121,7 @@ enum Decimal {
       let low = reverseDigits(high, digits: halfDigits)
       let n = high * factor + low
       if Binary.isPalindromeLookup(n) {
-        results.append(n)
+        results.append(n.description)
       }
     }
     
@@ -132,10 +132,10 @@ enum Decimal {
     highHalfStart: UInt64,
     highHalfEnd: UInt64,
     numOfDigits: Int
-  ) -> Array<UInt64>  {
+  ) -> Array<String>  {
     assert(numOfDigits.isOdd)
 
-    var results = [UInt64]()
+    var results = [String]()
 
     let halfDigits = numOfDigits / 2
     let middleFactor = pow(UInt64(10), halfDigits)
@@ -145,7 +145,7 @@ enum Decimal {
         let low = reverseDigits(high, digits: halfDigits)
         let n = high * highFactor + UInt64(middle) * middleFactor + low
         if Binary.isPalindromeLookup(n) {
-          results.append(n)
+          results.append(n.description)
         }
       }
     }
@@ -175,7 +175,7 @@ enum Decimal {
     highHalfStart: BInt,
     highHalfEnd: BInt,
     numOfDigits: Int
-  ) -> Array<BInt> {
+  ) -> Array<String> {
     assert(range[numOfDigits]!.contains(Int(highHalfStart)))
     assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
 
@@ -199,10 +199,10 @@ enum Decimal {
     highHalfStart: BInt,
     highHalfEnd: BInt,
     numOfDigits: Int
-  ) -> Array<BInt> {
+  ) -> Array<String> {
     assert(numOfDigits % 2 == 0)
     
-    var results = [BInt]()
+    var results = [String]()
 
     let halfDigits = numOfDigits / 2
     let factor = pow(BInt.ten, halfDigits)
@@ -211,7 +211,7 @@ enum Decimal {
       let low = reverseDigits(high, digits: halfDigits)
       let n = highPart + low
       if Binary.isPalindrome(n) {
-        results.append(n)
+        results.append(n.description)
       }
       highPart += factor
     }
@@ -223,10 +223,10 @@ enum Decimal {
     highHalfStart: BInt,
     highHalfEnd: BInt,
     numOfDigits: Int
-  ) -> Array<BInt>  {
+  ) -> Array<String>  {
     assert(numOfDigits.isOdd)
 
-    var results = [BInt]()
+    var results = [String]()
 
     let halfDigits = numOfDigits / 2
     let middleFactor = pow(BInt.ten, halfDigits)
@@ -238,7 +238,7 @@ enum Decimal {
         let low = reverseDigits(high, digits: halfDigits)
         let n = highPart + middle + low
         if Binary.isPalindrome(n) {
-          results.append(n)
+          results.append(n.description)
         }
         middle += middleFactor
       }

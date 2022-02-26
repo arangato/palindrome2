@@ -8,7 +8,7 @@ queue.maxConcurrentOperationCount = concurrentOperationCount
 let schedulingSemaphore = DispatchSemaphore(value: concurrentOperationCount + 1)
 var lock = NSLock()
 
-var pendingCompletion = [Int: [UInt64]]()
+var pendingCompletion = [Int: [String]]() // holds string representation of numbers
 var lastCompletedBatch = 0
 var checkedNumbersCount = 0
 var totalCheckedNumbersCount = 0
@@ -26,7 +26,7 @@ var measurementStartTime = startTime
 
 // handling special cases is annoying, so these are hard coded.
 // So I cheated a few nano second of compute, so what?!
-completeBatch(1, 6, [0, 1, 3, 5, 7, 9])
+completeBatch(1, 6, ["0", "1", "3", "5", "7", "9"])
 
 while true {
   schedulingSemaphore.wait()
@@ -71,7 +71,7 @@ while true {
   
 }
 
-func completeBatch(_ n: Int, _ size: Int, _ results: [UInt64]) {
+func completeBatch(_ n: Int, _ size: Int, _ results: [String]) {
   lock.lock()
   pendingCompletion[n] = results
   while let nextResults = pendingCompletion[lastCompletedBatch + 1] {
@@ -106,7 +106,7 @@ func completeBatch(_ n: Int, _ size: Int, _ results: [UInt64]) {
           "   batches issued: \(batchNumber), completed in order: \(lastCompletedBatch)")
     measurementStartTime = now
     checkedNumbersCount = 0
-    if totalEllapsedSeconds > 210 {
+    if totalEllapsedSeconds > 210.0 {
       exit(0)
     }
   }

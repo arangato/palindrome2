@@ -43,6 +43,28 @@ enum Binary {
     return true
   }
 
+  // works for non zero numbers.
+  static func isPalindrome(_ n: UInt128) -> Bool{
+    let msbIndex: Int32
+    if n.value.upperBits > 0 {
+      msbIndex = flsll(Int64(bitPattern: n.value.upperBits)) + 64
+    }
+    else {
+      msbIndex = flsll(Int64(bitPattern: n.value.lowerBits))
+    }
+    var i = msbIndex - 1
+    var j = 0
+    while i > j {
+      let highBitSet = (n & (UInt128(1) << i)) > 0
+      let lowBitSet = (n & (UInt128(1) << j)) > 0
+      guard highBitSet == lowBitSet else { return false }
+      i -= 1
+      j += 1
+    }
+
+    return true
+  }
+  
   static func isPalindromeLookup(_ n: UInt64) -> Bool{
     let msbIndex = flsll(Int64(bitPattern: n))
     var lowHalf = UInt32(n >> ((msbIndex + 1) / 2))

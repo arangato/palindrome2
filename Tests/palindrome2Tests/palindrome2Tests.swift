@@ -118,4 +118,44 @@ final class palindrom2Tests: XCTestCase {
     XCTAssertEqual(Binary.isPalindrome(np8), false)
   }
 
+  func testBinaryPalindromeInt128() {
+    let p0: UInt128 = 0b1
+    let p1: UInt128 = 0b10001
+    let p2: UInt128 = 0b10101
+    let p3: UInt128 = 0b100001
+    let p4: UInt128 = 0b101101
+    let p5: UInt128 = 1979791
+    let p6: UInt128 = 7451111547
+    let p7: UInt128 = try! UInt128("\(UInt64.max)")
+    let p8 = UInt128("7475703079870789703075747")
+    XCTAssertEqual(Binary.isPalindrome(p0), true)
+    XCTAssertEqual(Binary.isPalindrome(p1), true)
+    XCTAssertEqual(Binary.isPalindrome(p2), true)
+    XCTAssertEqual(Binary.isPalindrome(p3), true)
+    XCTAssertEqual(Binary.isPalindrome(p4), true)
+    XCTAssertEqual(Binary.isPalindrome(p5), true)
+    XCTAssertEqual(Binary.isPalindrome(p6), true)
+    XCTAssertEqual(Binary.isPalindrome(p7), true)
+    XCTAssertEqual(Binary.isPalindrome(p8), true)
+
+    let np0: UInt128 = 0b10
+    let np1: UInt128 = 0b10011
+    let np2: UInt128 = 0b11101
+    let np3: UInt128 = 0b101001
+    let np4: UInt128 = 0b100101
+    let np5: UInt128 = 1978791
+    let np6: UInt128 = 74512321547
+    let np7 = try! UInt128("\(UInt64.max - 1)")
+    let np8 = UInt128("7475703079871789703075747")
+    XCTAssertEqual(Binary.isPalindrome(np0), false)
+    XCTAssertEqual(Binary.isPalindrome(np1), false)
+    XCTAssertEqual(Binary.isPalindrome(np2), false)
+    XCTAssertEqual(Binary.isPalindrome(np3), false)
+    XCTAssertEqual(Binary.isPalindrome(np4), false)
+    XCTAssertEqual(Binary.isPalindrome(np5), false)
+    XCTAssertEqual(Binary.isPalindrome(np6), false)
+    XCTAssertEqual(Binary.isPalindrome(np7), false)
+    XCTAssertEqual(Binary.isPalindrome(np8), false)
+  }
+  
 }

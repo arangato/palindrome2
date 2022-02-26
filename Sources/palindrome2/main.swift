@@ -67,11 +67,21 @@ while true {
   batchNumber += 1
   
   if end == rangeEnd {
+    if numOfDigits == 20 {
+      break
+    }
+    
     if numOfDigits.isOdd {
       rangeStart *= 10
       rangeEnd = rangeEnd * 10 + 9
     }
+
     numOfDigits += 1
+    if numOfDigits == 20 {
+      // the end of UInt64. some serious sourcery required to go beyond.
+      rangeEnd = 1843999999
+    }
+
     start = rangeStart
   } else {
     start = end + 1

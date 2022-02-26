@@ -48,20 +48,37 @@ final class palindrom2Tests: XCTestCase {
   }
   
   func testReverseDigits() {
-    let r1 = Decimal.reverseDigits(1234567, digits: 7)
+    let r1 = Decimal.reverseDigits(UInt64(1234567), digits: 7)
     XCTAssertEqual(r1, 7654321)
 
-    let r2 = Decimal.reverseDigits(12345, digits: 7)
+    let r2 = Decimal.reverseDigits(UInt64(12345), digits: 7)
     XCTAssertEqual(r2, 5432100)
 
-    let r3 = Decimal.reverseDigits(1234500, digits: 7)
+    let r3 = Decimal.reverseDigits(UInt64(1234500), digits: 7)
     XCTAssertEqual(r3, 54321)
 
-    let r4 = Decimal.reverseDigits(1234567, digits: 3)
+    let r4 = Decimal.reverseDigits(UInt64(1234567), digits: 3)
     XCTAssertEqual(r4, 765)
   }
   
-  func testBinaryPalindromeBInt() {
+  func testReverseDigitsBInt() {
+    let r1 = Decimal.reverseDigits(BInt("1234567", radix: 10)!, digits: 7)
+    XCTAssertEqual(r1, BInt("7654321", radix: 10)!)
+
+    let r2 = Decimal.reverseDigits(BInt("12345", radix: 10)!, digits: 7)
+    XCTAssertEqual(r2, BInt("5432100", radix: 10)!)
+
+    let r3 = Decimal.reverseDigits(BInt("1234500", radix: 10)!, digits: 7)
+    XCTAssertEqual(r3, BInt("54321", radix: 10)!)
+
+    let r4 = Decimal.reverseDigits(BInt("1234567", radix: 10)!, digits: 3)
+    XCTAssertEqual(r4, BInt("765", radix: 10)!)
+
+    let r5 = Decimal.reverseDigits(BInt("1234567890123456789012345678901234567890", radix: 10)!, digits: 40)
+    XCTAssertEqual(r5, BInt("987654321098765432109876543210987654321", radix: 10)!)
+  }
+  
+ func testBinaryPalindromeBInt() {
     let p0 = BInt("1", radix: 2)!
     let p1 = BInt("10001", radix: 2)!
     let p2 = BInt("10101", radix: 2)!

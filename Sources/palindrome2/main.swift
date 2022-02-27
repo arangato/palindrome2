@@ -1,5 +1,6 @@
 import CoreFoundation
 import Foundation
+import BigNumber
 
 let batchSize: UInt64 = 100000
 let concurrentOperationCount = ProcessInfo.processInfo.processorCount
@@ -28,6 +29,7 @@ var measurementStartTime = startTime
 // So I cheated a few nano second of compute, so what?!
 completeBatch(1, 6, ["0", "1", "3", "5", "7", "9"])
 
+// This loop goes over decimal palindroms
 while true {
   schedulingSemaphore.wait()
   
@@ -86,8 +88,60 @@ while true {
   } else {
     start = end + 1
   }
-  
 }
+
+// This loop goes over numbers larger than UInt64
+var rangeStartBInt = BInt("1000000000", radix: 10)!
+var rangeEndBInt = BInt("9999999999", radix: 10)!
+var startBInt = BInt("1844000000", radix: 10)!
+
+while true {
+  schedulingSemaphore.wait()
+  
+  var end: BInt
+  if numOfDigits.isOdd {
+    end = startBInt + Int(batchSize / 10) // because each input half is repeated 10 times with different middle digits
+  } else {
+    end = startBInt + Int(batchSize)
+  }
+  
+  end = min(end, rangeEndBInt)
+  
+  let startFirstDigit = startBInt.digit(numOfDigits / 2)
+  let endFirstDigit = end.digit(numOfDigits / 2)
+  if !startFirstDigit.isOdd && startFirstDigit == endFirstDigit {
+    startBInt = rangeStartBInt * (startFirstDigit + 1)
+    schedulingSemaphore.signal()
+    continue
+  }
+
+  let batchStart = startBInt
+  let batchEnd = end
+  let batchDigits = numOfDigits
+  let n = batchNumber
+  queue.addOperation {
+    let results = Decimal.makePalindrome(
+      highHalfStart: batchStart,
+      highHalfEnd: batchEnd,
+      numOfDigits: batchDigits
+    )
+    completeBatch(n, Int(batchEnd - batchStart + 1), results)
+    schedulingSemaphore.signal()
+  }
+
+  batchNumber += 1
+  if end == rangeEnd {
+    if numOfDigits.isOdd {
+      rangeStartBInt *= 10
+      rangeEndBInt = rangeEndBInt * 10 + 9
+    }
+    numOfDigits += 1
+    startBInt = rangeStartBInt
+  } else {
+    startBInt = end + 1
+  }
+}
+
 
 func completeBatch(_ n: Int, _ size: Int, _ results: [String]) {
   lock.lock()

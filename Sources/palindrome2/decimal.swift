@@ -233,10 +233,11 @@ enum Decimal {
     let highFactor = middleFactor * 10
     var highPart = highHalfStart * highFactor
     for high in highHalfStart...highHalfEnd {
+      let low = reverseDigits(high, digits: halfDigits)
+      let highAndLow = highPart + low
       var middle = BInt.zero
       for _ in 0...9 {
-        let low = reverseDigits(high, digits: halfDigits)
-        let n = highPart + middle + low
+        let n = highAndLow + middle
         if Binary.isPalindrome(n) {
           results.append(n.description)
         }
@@ -273,6 +274,10 @@ extension BInt {
   static let ten = BInt("10", radix: 10)!
   static let zero = BInt("0", radix: 10)!
   static let nine = BInt("9", radix: 10)!
+
+  func digit(_ n: Int) -> Int {
+    Int(self / Decimal.pow(10, n - 1) % 10)
+  }
 }
 
 extension UInt64 {

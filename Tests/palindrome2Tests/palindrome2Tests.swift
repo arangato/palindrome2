@@ -118,4 +118,31 @@ final class palindrom2Tests: XCTestCase {
     XCTAssertEqual(Binary.isPalindrome(np8), false)
   }
 
+  func testBackwardDecimal() {
+    let bd0 = BackwardDecimal(9871234, digitsCount: 7)
+    XCTAssertEqual(bd0.value, 9871234)
+    var bd1 = BackwardDecimal(digits: [4,3,2,1,7,8,9])
+    XCTAssertEqual(bd1.value, 9871234)
+    bd1.backwardsInc()
+    XCTAssertEqual(bd1.value, 0971234)
+    
+    var bd2 = BackwardDecimal(digits: [1, 9, 7])
+    XCTAssertEqual(bd2.value, 791)
+    bd2.backwardsInc()
+    XCTAssertEqual(bd2.value, 891)
+
+    bd2.backwardsInc()
+    XCTAssertEqual(bd2.value, 991)
+
+    bd2.backwardsInc()
+    XCTAssertEqual(bd2.value, 002)
+
+    bd2.backwardsInc()
+    XCTAssertEqual(bd2.value, 102)
+    
+    var bd3 = BackwardDecimal(1, digitsCount: 2)
+    XCTAssertEqual(bd3.value, 1)
+    bd3.backwardsInc()
+    XCTAssertEqual(bd3.value, 11)
+  }
 }

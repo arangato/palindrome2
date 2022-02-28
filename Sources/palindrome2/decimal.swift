@@ -346,6 +346,94 @@ enum Decimal {
     return results
   }
 
+  // MARK: UInt128 with backward decimal
+
+  static func makePalindromeUInt128(
+    highHalfStart: UInt64,
+    highHalfEnd: UInt64,
+    numOfDigits: Int
+  ) -> Array<String> {
+    assert(range[numOfDigits]!.contains(Int(highHalfStart)))
+    assert(range[numOfDigits]!.contains(Int(highHalfEnd)))
+
+    if numOfDigits.isOdd {
+      return makeOddPalindromeUInt128(
+        highHalfStart: highHalfStart,
+        highHalfEnd: highHalfEnd,
+        numOfDigits: numOfDigits
+      )
+    } else {
+      return makeEvenPalindromeUInt128(
+        highHalfStart: highHalfStart,
+        highHalfEnd: highHalfEnd,
+        numOfDigits: numOfDigits
+      )
+    }
+  }
+  
+  // no middle digit
+  static func makeEvenPalindromeUInt128(
+    highHalfStart: UInt64,
+    highHalfEnd: UInt64,
+    numOfDigits: Int
+  ) -> Array<String> {
+    assert(numOfDigits % 2 == 0)
+    
+    var results = [String]()
+
+    let halfDigits = numOfDigits / 2
+    let factor = UInt128(upperBits: 0, lowerBits: pow(UInt64(10), halfDigits))
+    var low = BackwardDecimal(
+      reverseDigits(highHalfStart, digits: halfDigits),
+      digitsCount: halfDigits
+    )
+    var highPart = UInt128(upperBits: 0, lowerBits:highHalfStart) * factor
+    for _ in highHalfStart...highHalfEnd {
+      let n = highPart + UInt128(upperBits: 0, lowerBits: low.value)
+      if Binary.isPalindrome(n) {
+        results.append(n.description)
+      }
+      highPart += factor
+      low.backwardsInc()
+    }
+    
+    return results
+  }
+
+  static func makeOddPalindromeUInt128(
+    highHalfStart: UInt64,
+    highHalfEnd: UInt64,
+    numOfDigits: Int
+  ) -> Array<String>  {
+    assert(numOfDigits.isOdd)
+
+    var results = [String]()
+
+    let halfDigits = numOfDigits / 2
+    let middleFactor = UInt128(upperBits: 0, lowerBits: pow(UInt64(10), halfDigits))
+    let highFactor = middleFactor * 10
+    var low = BackwardDecimal(
+      reverseDigits(highHalfStart, digits: halfDigits),
+      digitsCount: halfDigits
+    )
+    var highPart = UInt128(upperBits: 0, lowerBits:highHalfStart) * highFactor
+    for _ in highHalfStart...highHalfEnd {
+      let highAndLow = highPart + UInt128(upperBits: 0, lowerBits: low.value)
+      var middle = UInt128(0)
+      for _ in 0...9 {
+        let n = highAndLow + middle
+        if Binary.isPalindrome(n) {
+          results.append(n.description)
+        }
+        middle += middleFactor
+      }
+      highPart += highFactor
+      low.backwardsInc()
+    }
+    
+    return results
+  }
+
   @inline(__always)
   static func reverseDigits(_ n: BInt, digits: Int) -> BInt {
     var n = n

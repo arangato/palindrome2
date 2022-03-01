@@ -49,7 +49,7 @@ while true {
     schedulingSemaphore.signal()
     continue
   }
-  
+
   let batchStart = start
   let batchEnd = end
   let batchDigits = numOfDigits
@@ -91,36 +91,35 @@ while true {
 }
 
 // This loop goes over numbers larger than UInt64
-var rangeStartBInt = BInt("1000000000", radix: 10)!
-var rangeEndBInt = BInt("9999999999", radix: 10)!
-var startBInt = BInt("1844000000", radix: 10)!
+rangeEnd = 9999999999
+start = 1844000000
 
 while true {
   schedulingSemaphore.wait()
   
-  var end: BInt
+  var end: UInt64
   if numOfDigits.isOdd {
-    end = startBInt + Int(batchSize / 10) // because each input half is repeated 10 times with different middle digits
+    end = start + batchSize / 10 // because each input half is repeated 10 times with different middle digits
   } else {
-    end = startBInt + Int(batchSize)
+    end = start + batchSize
   }
   
-  end = min(end, rangeEndBInt)
+  end = min(end, rangeEnd)
   
-  let startFirstDigit = startBInt.digit(numOfDigits / 2)
+  let startFirstDigit = start.digit(numOfDigits / 2)
   let endFirstDigit = end.digit(numOfDigits / 2)
   if !startFirstDigit.isOdd && startFirstDigit == endFirstDigit {
-    startBInt = rangeStartBInt * (startFirstDigit + 1)
+    start = rangeStart * UInt64(startFirstDigit + 1)
     schedulingSemaphore.signal()
     continue
   }
 
-  let batchStart = startBInt
+  let batchStart = start
   let batchEnd = end
   let batchDigits = numOfDigits
   let n = batchNumber
   queue.addOperation {
-    let results = Decimal.makePalindrome(
+    let results = Decimal.makePalindromeUInt128(
       highHalfStart: batchStart,
       highHalfEnd: batchEnd,
       numOfDigits: batchDigits
@@ -132,13 +131,13 @@ while true {
   batchNumber += 1
   if end == rangeEnd {
     if numOfDigits.isOdd {
-      rangeStartBInt *= 10
-      rangeEndBInt = rangeEndBInt * 10 + 9
+      rangeStart *= 10
+      rangeEnd = rangeEnd * 10 + 9
     }
     numOfDigits += 1
-    startBInt = rangeStartBInt
+    start = rangeStart
   } else {
-    startBInt = end + 1
+    start = end + 1
   }
 }
 

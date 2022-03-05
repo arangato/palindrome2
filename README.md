@@ -8,6 +8,10 @@ swift run -c release
 
 ## Execute with debug info and processing rate measurements
 
+palindromes with ordinal numbers and elapsed time since start.
+swift run -c release -Xswiftc -DTIMING
+
+Rate of operations
 swift run -c release -Xswiftc -DMEASURE
 
 ## Notes
